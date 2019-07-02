@@ -25,7 +25,6 @@ There is a CacheGauge registered in the MetricRegistry for each metric gathered 
 Graphite reporter is on a regular (configured) basis getting all registered Gaguges and calling getValue() method on them.
 The CacheGauges will then read the value for a given metric from MetricCache and return it. GraphiteReporter will pass this information to graphite.
 
-
 ## Example construction
 ``` scala
     val exclusiveTimePeriodLock = new ExclusiveTimePeriodLock {

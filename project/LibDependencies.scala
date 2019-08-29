@@ -33,7 +33,7 @@ object LibDependencies {
       "uk.gov.hmrc"           %% "mongo-lock"      % "6.15.0-play-25"
     ),
     play26 = Seq(
-      "com.kenshoo"           %% "metrics-play"    % "2.7.0_0.8.0",
+      "com.kenshoo"           %% "metrics-play"    % "2.6.19_0.7.0",
       "com.typesafe.play"     %% "play"            % play26Version,
       "uk.gov.hmrc"           %% "mongo-lock"      % "6.15.0-play-26"
     )

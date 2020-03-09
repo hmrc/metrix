@@ -3,6 +3,15 @@
 
 [ ![Download](https://api.bintray.com/packages/hmrc/releases/metrix/images/download.svg) ](https://bintray.com/hmrc/releases/metrix/_latestVersion)
 
+## Version Info
+
+| Version | Scala Version | Play Version |
+|---------|---------------|--------------|
+| 4.0.0   | 2.11, 2.12    | 2.6 only|
+| 3.x.x   | 2.11 only     | 2.5, 2.6|
+
+As of version 4.0.0 Metrix is no longer built with Play 2.5 support. If you require Play 2.5 support continue to use the 3.x.x branch or consider upgrading.
+
 ## Name origins
 We needed to create a new library to contain the classes and mechanisms needed to produce and report on slow-running metrics.
 We had a heated debate about the name for this library and we chose to take the blue pill and named it 'metrix'.

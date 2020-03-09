@@ -38,12 +38,12 @@ object LibDependencies {
       "org.mockito"    %  "mockito-all"                % "1.9.5"  % Test,
       "org.pegdown"    %  "pegdown"                    % "1.6.0"  % Test,
       "org.scalacheck" %% "scalacheck"                 % "1.14.1" % Test,
-      "org.scalatest"  %% "scalatest"                  % "3.0.5"  % Test,
-      "uk.gov.hmrc"    %% "service-integration-test"   % "0.9.0-play-26"  % Test
+      "org.scalatest"  %% "scalatest"                  % "3.0.5"  % Test
     ),
     play26 = Seq(
-      "com.typesafe.play" %% "play-test"          % play26Version   % Test,
-      "uk.gov.hmrc"       %% "reactivemongo-test" % "4.16.0-play-26" % Test
+      "com.typesafe.play" %% "play-test"                % play26Version    % Test,
+      "uk.gov.hmrc"       %% "reactivemongo-test"       % "4.16.0-play-26" % Test,
+      "uk.gov.hmrc"       %% "service-integration-test" % "0.9.0-play-26"  % Test
     )
   )
 }

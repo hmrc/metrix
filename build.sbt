@@ -7,15 +7,15 @@ name := "metrix"
 
 makePublicallyAvailableOnBintray := true
 
-majorVersion                     := 3
+majorVersion                     := 4
 
 defaultSettings()
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.11.12"
 
 libraryDependencies ++= LibDependencies()
 
-crossScalaVersions := Seq("2.11.8")
+crossScalaVersions := Seq("2.11.12", "2.12.10")
 
 resolvers := Seq(
   Resolver.bintrayRepo("hmrc", "releases"),

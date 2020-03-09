@@ -23,17 +23,16 @@ import org.mockito.Mockito._
 import org.scalatest.Inside._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, LoneElement}
+import org.scalatest.{BeforeAndAfterEach, LoneElement, Matchers, WordSpec}
 import uk.gov.hmrc.lock.{ExclusiveTimePeriodLock, LockRepository}
 import uk.gov.hmrc.metrix.domain.{MetricRepository, MetricSource, PersistedMetric}
 import uk.gov.hmrc.metrix.persistence.MongoMetricRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class MetricOrchestratorSpec extends UnitSpec
+class MetricOrchestratorSpec extends WordSpec with Matchers
   with ScalaFutures
   with Eventually
   with LoneElement
@@ -312,9 +311,15 @@ class MetricOrchestratorSpec extends UnitSpec
 
       val acquiredMetrics = Map("a" -> 1, "b" -> 2)
 
+      val mockRepo: MetricRepository = mock[MongoMetricRepository]
+
+      when(mockRepo.persist(any[PersistedMetric])(any[ExecutionContext])).thenReturn(Future.successful(Thread.sleep(200)))
+
+      when(mockRepo.findAll).thenReturn(Future.successful(List(PersistedMetric("a", 1), PersistedMetric("b", 2))))
+
       val orchestrator = metricOrchestratorFor(
         sources = List(sourceReturning(acquiredMetrics)),
-        metricRepository = new SlowlyWritingMetricRepository
+        metricRepository = mockRepo
       )
 
       // when
@@ -325,12 +330,6 @@ class MetricOrchestratorSpec extends UnitSpec
 
       metricRegistry.getGauges.get(s"a").getValue shouldBe 1
       metricRegistry.getGauges.get(s"b").getValue shouldBe 2
-    }
-
-    class SlowlyWritingMetricRepository extends MongoMetricRepository {
-      override def persist(calculatedMetric: PersistedMetric)(implicit ec: ExecutionContext): Future[Unit] = {
-        Future(Thread.sleep(200)).flatMap(_ => super.persist(calculatedMetric))
-      }
     }
 
     implicit class MetricOrchestrationResultComparison(metricUpdateResult: MetricOrchestrationResult) {

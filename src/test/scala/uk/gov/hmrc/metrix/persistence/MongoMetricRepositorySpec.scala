@@ -17,15 +17,14 @@
 package uk.gov.hmrc.metrix.persistence
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, LoneElement}
+import org.scalatest.{BeforeAndAfterEach, LoneElement, Matchers, WordSpec}
 import uk.gov.hmrc.metrix.domain.PersistedMetric
 import uk.gov.hmrc.mongo.MongoSpecSupport
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration._
 
-class MongoMetricRepositorySpec extends UnitSpec with MongoSpecSupport with ScalaFutures with LoneElement with BeforeAndAfterEach {
+class MongoMetricRepositorySpec extends WordSpec with Matchers with MongoSpecSupport with ScalaFutures with LoneElement with BeforeAndAfterEach {
 
   override implicit val patienceConfig = PatienceConfig(timeout = 30 seconds, interval = 100 millis)
 

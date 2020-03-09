@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.metrix
 
+import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.metrix.domain.PersistedMetric
-import uk.gov.hmrc.play.test.UnitSpec
 
-class MetricCacheSpec extends UnitSpec {
+class MetricCacheSpec extends WordSpec with Matchers {
 
   "MetricsCache" should {
 

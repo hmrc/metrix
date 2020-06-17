@@ -11,7 +11,7 @@ majorVersion                     := 4
 
 defaultSettings()
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.10"
 
 libraryDependencies ++= LibDependencies()
 

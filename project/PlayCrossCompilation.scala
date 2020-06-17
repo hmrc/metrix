@@ -6,6 +6,6 @@ object PlayCrossCompilation extends AbstractPlayCrossCompilation(defaultPlayVers
     playVersion match {
       case PlayVersion.Play26 => scalaVersions
       case PlayVersion.Play27 => // simple-reactivemongo is only available for 2.12 (akka incompatibility)
-                                 scalaVersions.filter(version => version.startsWith("2.12"))
+                                 scalaVersions.filter(_.startsWith("2.12"))
     }
 }

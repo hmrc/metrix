@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.metrix.persistence
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, LoneElement, Matchers, WordSpec}
+import org.scalatest.{BeforeAndAfterEach, LoneElement}
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.metrix.domain.PersistedMetric
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
-import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class MongoMetricRepositorySpec extends WordSpec with Matchers with MongoSpecSupport with ScalaFutures with LoneElement with BeforeAndAfterEach {
-
-  override implicit val patienceConfig = PatienceConfig(timeout = 30 seconds, interval = 100 millis)
+class MongoMetricRepositorySpec
+  extends AnyWordSpec
+     with Matchers
+     with MongoSpecSupport
+     with ScalaFutures
+     with IntegrationPatience
+     with LoneElement
+     with BeforeAndAfterEach {
 
   lazy val metricsRepo = new MongoMetricRepository(databaseName)
 

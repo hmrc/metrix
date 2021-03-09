@@ -7,8 +7,9 @@
 
 | Version | Scala Version | Play Version |
 |---------|---------------|--------------|
-| 4.0.0   | 2.11, 2.12    | 2.6 only|
-| 3.x.x   | 2.11 only     | 2.5, 2.6|
+| 5.0.0   | 2.12 only     | 2.6, 2.7, 2.8|
+| 4.x.x   | 2.11, 2.12    | 2.6, 2.7     |
+| 3.x.x   | 2.11 only     | 2.5, 2.6     |
 
 As of version 4.0.0 Metrix is no longer built with Play 2.5 support. If you require Play 2.5 support continue to use the 3.x.x branch or consider upgrading.
 
@@ -41,7 +42,7 @@ The CacheGauges will then read the value for a given metric from MetricCache and
       override val lockId: String = "write-your-lock-id"
       override val holdLockFor =  new JodaDuration(lockExpiryTime.toMillis)
     }
-    
+
     val sources: List[MetricSource] = AddYourMetricSourcesHere
     val metricOrchestrator = new MetricOrchestrator(
       sources,
@@ -50,14 +51,14 @@ The CacheGauges will then read the value for a given metric from MetricCache and
       MetricsRegistry.defaultRegistry
     )
 ```
-## Example usage    
+## Example usage
 ``` scala
     metricOrchestrator
         .attemptToUpdateAndRefreshMetrics(
           skipReportingOn = optionalFilterMethodForPersistedMetrics()
         ).map(_.andLogTheResult())
         .recover { case e: RuntimeException => Logger.error(s"An error occurred processing metrics: ${e.getMessage}", e) }
-```      
+```
 
 ``` scala
     metricOrchestrator
@@ -65,21 +66,20 @@ The CacheGauges will then read the value for a given metric from MetricCache and
           resetMetricOn = optionalFilterMethodToResetMetrics()
         ).map(_.andLogTheResult())
         .recover { case e: RuntimeException => Logger.error(s"An error occurred processing metrics: ${e.getMessage}", e) }
-```     
+```
 
 ## Installing
- 
+
 Include the following dependency in your SBT build
- 
+
 ``` scala
 resolvers += Resolver.bintrayRepo("hmrc", "releases")
- 
-libraryDependencies += "uk.gov.hmrc" %% "metrix" % "[INSERT-VERSION]" 
+
+libraryDependencies += "uk.gov.hmrc" %% "metrix" % "[INSERT-VERSION]"
 ```
 ## Compatibility
-Metrix since version 3.0.0 uses the latest ReactiveMongo (https://github.com/ReactiveMongo/ReactiveMongo) instead of HMRC fork of it (https://github.com/hmrc/ReactiveMongo). Please review your dependencies if you upgrade. In particular you should no longer use https://github.com/hmrc/Play-ReactiveMongo/ in your microservice. 
+Metrix since version 3.0.0 uses the latest ReactiveMongo (https://github.com/ReactiveMongo/ReactiveMongo) instead of HMRC fork of it (https://github.com/hmrc/ReactiveMongo). Please review your dependencies if you upgrade. In particular you should no longer use https://github.com/hmrc/Play-ReactiveMongo/ in your microservice.
 
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-    

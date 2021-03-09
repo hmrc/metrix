@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,28 +18,31 @@ package uk.gov.hmrc.metrix
 
 import com.codahale.metrics.{Metric, MetricFilter, MetricRegistry}
 import org.joda.time.Duration
-import org.mockito.Matchers.any
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfterEach, LoneElement}
 import org.scalatest.Inside._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, LoneElement, Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.lock.{ExclusiveTimePeriodLock, LockRepository}
 import uk.gov.hmrc.metrix.domain.{MetricRepository, MetricSource, PersistedMetric}
 import uk.gov.hmrc.metrix.persistence.MongoMetricRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class MetricOrchestratorSpec extends WordSpec with Matchers
-  with ScalaFutures
-  with Eventually
-  with LoneElement
-  with MockitoSugar
-  with MongoSpecSupport
-  with IntegrationPatience
-  with BeforeAndAfterEach {
+class MetricOrchestratorSpec
+  extends AnyWordSpec
+     with Matchers
+     with ScalaFutures
+     with Eventually
+     with LoneElement
+     with MockitoSugar
+     with MongoSpecSupport
+     with IntegrationPatience
+     with BeforeAndAfterEach {
 
   val metricRegistry = new MetricRegistry()
 
@@ -254,7 +257,7 @@ class MetricOrchestratorSpec extends WordSpec with Matchers
         .thenReturn(Future(List(PersistedMetric("a", 1), PersistedMetric("b", 2), PersistedMetric("z", 8))))
 
       when(metricRepository.persist(any[PersistedMetric])(any[ExecutionContext]))
-        .thenReturn(Future[Unit]())
+        .thenReturn(Future(()))
 
       // when
       orchestrator.attemptToUpdateAndRefreshMetrics().futureValue shouldResultIn MetricsUpdatedAndRefreshed(

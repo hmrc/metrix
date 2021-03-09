@@ -20,41 +20,52 @@ object LibDependencies {
 
   def apply(): Seq[ModuleID] = compile ++ test
 
-  private val play26Version = "2.6.23"
-  private val play27Version = "2.7.4"
+  private val play26Version = "2.6.25"
+  private val play27Version = "2.7.9"
+  private val play28Version = "2.8.7"
 
   private val compile: Seq[ModuleID] = PlayCrossCompilation.dependencies(
-    shared = Seq(
-      "io.dropwizard.metrics" % "metrics-graphite" % "3.2.5"
-    ),
     play26 = Seq(
-      "com.kenshoo"           %% "metrics-play"    % "2.6.19_0.7.0",
-      "com.typesafe.play"     %% "play"            % play26Version,
-      "uk.gov.hmrc"           %% "mongo-lock"      % "6.23.0-play-26"
+      "com.kenshoo"           %% "metrics-play"     % "2.6.19_0.7.0",
+      "io.dropwizard.metrics" %  "metrics-graphite" % "4.0.3", // same version as metrics-play's io.dropwizard.metrics dependencies
+      "com.typesafe.play"     %% "play"             % play26Version,
+      "uk.gov.hmrc"           %% "mongo-lock"       % "7.0.0-play-26"
     ),
     play27 = Seq(
-      "com.kenshoo"           %% "metrics-play"    % "2.6.19_0.7.0",
-      "com.typesafe.play"     %% "play"            % play27Version,
-      "uk.gov.hmrc"           %% "mongo-lock"      % "6.23.0-play-27"
+      "com.kenshoo"           %% "metrics-play"     % "2.7.3_0.8.2",
+      "io.dropwizard.metrics" %  "metrics-graphite" % "4.0.5", // same version as metrics-play's io.dropwizard.metrics dependencies
+      "com.typesafe.play"     %% "play"             % play27Version,
+      "uk.gov.hmrc"           %% "mongo-lock"       % "7.0.0-play-27"
+    ),
+    play28 = Seq(
+      "com.kenshoo"           %% "metrics-play"     % "2.7.3_0.8.2", // no Play 2.8 build, but is compatible.
+      "io.dropwizard.metrics" %  "metrics-graphite" % "4.0.5", // same version as metrics-play's io.dropwizard.metrics dependencies
+      "com.typesafe.play"     %% "play"             % play28Version,
+      "uk.gov.hmrc"           %% "mongo-lock"       % "7.0.0-play-28"
     )
   )
 
   private val test: Seq[ModuleID] = PlayCrossCompilation.dependencies(
     shared = Seq(
-      "org.mockito"    %  "mockito-all"                % "1.9.5"  % Test,
-      "org.pegdown"    %  "pegdown"                    % "1.6.0"  % Test,
-      "org.scalacheck" %% "scalacheck"                 % "1.14.1" % Test,
-      "org.scalatest"  %% "scalatest"                  % "3.0.5"  % Test
+      "org.scalatest"        %% "scalatest"                % "3.1.4"       % Test,
+      "com.vladsch.flexmark" %  "flexmark-all"             % "0.36.8"      % Test,
+      "org.scalatestplus"    %% "scalatestplus-scalacheck" % "3.1.0.0-RC2" % Test,
+      "org.mockito"          %% "mockito-scala-scalatest"  % "1.16.23"     % Test
     ),
     play26 = Seq(
       "com.typesafe.play" %% "play-test"                % play26Version    % Test,
-      "uk.gov.hmrc"       %% "reactivemongo-test"       % "4.21.0-play-26" % Test,
-      "uk.gov.hmrc"       %% "service-integration-test" % "0.12.0-play-26" % Test
+      "uk.gov.hmrc"       %% "reactivemongo-test"       % "5.0.0-play-26"  % Test,
+      "uk.gov.hmrc"       %% "service-integration-test" % "1.1.0-play-26"  % Test
     ),
     play27 = Seq(
       "com.typesafe.play" %% "play-test"                % play27Version    % Test,
-      "uk.gov.hmrc"       %% "reactivemongo-test"       % "4.21.0-play-27" % Test,
-      "uk.gov.hmrc"       %% "service-integration-test" % "0.12.0-play-27" % Test
+      "uk.gov.hmrc"       %% "reactivemongo-test"       % "5.0.0-play-27"  % Test,
+      "uk.gov.hmrc"       %% "service-integration-test" % "1.1.0-play-27"  % Test
+    ),
+    play28 = Seq(
+      "com.typesafe.play" %% "play-test"                % play28Version    % Test,
+      "uk.gov.hmrc"       %% "reactivemongo-test"       % "5.0.0-play-28"  % Test,
+      "uk.gov.hmrc"       %% "service-integration-test" % "1.1.0-play-28"  % Test
     )
   )
 }

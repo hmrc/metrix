@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.metrix
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.metrix.domain.PersistedMetric
 
-class MetricCacheSpec extends WordSpec with Matchers {
+class MetricCacheSpec extends AnyWordSpec with Matchers {
 
   "MetricsCache" should {
-
     "initialize with a list of metrics" in {
       val metrics = new MetricCache()
       metrics.refreshWith(List(PersistedMetric("a", 1), PersistedMetric("b", 2)))
@@ -43,7 +43,6 @@ class MetricCacheSpec extends WordSpec with Matchers {
 
       metrics.valueOf("a") shouldBe 1
       metrics.valueOf("b") shouldBe 2
-
     }
 
     "remove elements that are no longer there" in {

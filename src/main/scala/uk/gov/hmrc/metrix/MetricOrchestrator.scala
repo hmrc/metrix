@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,20 +40,26 @@ class MetricCache {
 final case class CachedMetricGauge(name: String, metrics: MetricCache) extends Gauge[Int] {
   override def getValue: Int = {
     val value = metrics.valueOf(name)
-    Logger.debug(s"Gauge for metric $name is reporting on value: $value")
+    CachedMetricGauge.logger.debug(s"Gauge for metric $name is reporting on value: $value")
     value
   }
+}
+
+object CachedMetricGauge {
+  private val logger: Logger = Logger(getClass)
 }
 
 trait MetricOrchestrationResult {
   def andLogTheResult()
 }
 
-final case class MetricsUpdatedAndRefreshed(updatedMetrics: Map[String, Int],
-                                            refreshedMetrics: Seq[PersistedMetric]) extends MetricOrchestrationResult {
+final case class MetricsUpdatedAndRefreshed(
+  updatedMetrics  : Map[String, Int],
+  refreshedMetrics: Seq[PersistedMetric]
+) extends MetricOrchestrationResult {
   override def andLogTheResult(): Unit = {
-    Logger.info(s"Acquired the lock. Both update and refresh have been performed.")
-    Logger.debug(
+    MetricsUpdatedAndRefreshed.logger.info(s"Acquired the lock. Both update and refresh have been performed.")
+    MetricsUpdatedAndRefreshed.logger.debug(
       s"""
          | The updated metrics coming from sources are: $updatedMetrics.
          | Metrics refreshed on the cache are: $refreshedMetrics
@@ -61,21 +67,33 @@ final case class MetricsUpdatedAndRefreshed(updatedMetrics: Map[String, Int],
   }
 }
 
-final case class MetricsOnlyRefreshed(refreshedMetrics: List[PersistedMetric]) extends MetricOrchestrationResult {
+object MetricsUpdatedAndRefreshed {
+  private val logger: Logger = Logger(getClass)
+}
+
+final case class MetricsOnlyRefreshed(
+  refreshedMetrics: List[PersistedMetric]
+) extends MetricOrchestrationResult {
   override def andLogTheResult(): Unit = {
-    Logger.info(s"Failed to acquire the lock. Therefore only refresh has been performed.")
-    Logger.debug(
+    MetricsOnlyRefreshed.logger.info(s"Failed to acquire the lock. Therefore only refresh has been performed.")
+    MetricsOnlyRefreshed.logger.debug(
       s"""
          | Metrics refreshed on the cache are: $refreshedMetrics
        """.stripMargin)
   }
 }
 
+object MetricsOnlyRefreshed {
+  private val logger: Logger = Logger(getClass)
+}
 
-class MetricOrchestrator(metricSources: List[MetricSource],
-                         lock: ExclusiveTimePeriodLock,
-                         metricRepository: MetricRepository,
-                         metricRegistry: MetricRegistry) {
+
+class MetricOrchestrator(
+  metricSources   : List[MetricSource],
+  lock            : ExclusiveTimePeriodLock,
+  metricRepository: MetricRepository,
+  metricRegistry  : MetricRegistry
+) {
 
   val metricCache = new MetricCache()
 
@@ -99,18 +117,20 @@ class MetricOrchestrator(metricSources: List[MetricSource],
                                       (implicit ec: ExecutionContext): Future[MetricOrchestrationResult] = {
     lock.tryToAcquireOrRenewLock {
       updateMetricRepository()
-    } flatMap { maybeUpdatedMetrics =>
-      metricRepository.findAll() map { persistedMetrics =>
+    }.flatMap { maybeUpdatedMetrics =>
+      metricRepository.findAll().map { persistedMetrics =>
         persistedMetrics.filterNot(skipReportingOn)
-      } map { filteredMetrics =>
+      }.map { filteredMetrics =>
 
         metricCache.refreshWith(filteredMetrics)
 
         val currentGauges = metricRegistry.getGauges
 
         filteredMetrics
-          .foreach(metric => if (!currentGauges.containsKey(metric.name))
-            metricRegistry.register(metric.name, CachedMetricGauge(metric.name, metricCache)))
+          .foreach(metric =>
+            if (!currentGauges.containsKey(metric.name))
+              metricRegistry.register(metric.name, CachedMetricGauge(metric.name, metricCache))
+          )
 
         maybeUpdatedMetrics match {
           case Some(updatedMetrics) => MetricsUpdatedAndRefreshed(updatedMetrics, filteredMetrics)

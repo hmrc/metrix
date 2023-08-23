@@ -1,3 +1,6 @@
+[DEPRECATED]
+=
+*This repository has been replaced by [hmrc-mongo-metrix-play-28](https://github.com/hmrc/hmrc-mongo/tree/main/hmrc-mongo-metrix-play-28)*
 
 # metrix
 
